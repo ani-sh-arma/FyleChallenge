@@ -60,8 +60,8 @@
     
     <div class="userWrapper">
 
-        <form class="form-inline my-2 my-lg-0" style="display: flex; margin-bottom:20px;" method="post" action="{% url 'index' %}">
-            {% csrf_token %}
+        <form class="form-inline my-2 my-lg-0" style="display: flex; margin-bottom:20px;" method="get" action="{% url 'index' %}">
+            
             <input class="form-control mr-sm-2" type="search" placeholder="Search user" name="username" aria-label="Search">
             <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
         </form>
@@ -149,6 +149,7 @@
     <li class="page-item"><a class="page-link" href="?username={{ user_data.login }}&page={{ objects.next_page_number }}">next</a></li>
     <li class="page-item"><a class="page-link" href="?username={{ user_data.login }}&page={{ objects.paginator.num_pages }}">last &raquo;</a></li>
 {% endif %}
+
 
       
           </ul>

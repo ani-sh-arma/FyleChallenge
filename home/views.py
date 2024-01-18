@@ -7,10 +7,10 @@ from django.http import JsonResponse
 
 def index(request):
 
-    username = request.POST.get('username', '')  # Get the username from the request
+    username = request.GET.get('username', '')  # Get the username from the request
 
     if not username:
-        username = 'johnpapa'    
+        username = 'johnpapa'  # Default to johnpapa if no username is provided
     
     user_data = utils.get_user_data(username)
     repo_data = utils.get_user_repositories(username)
