@@ -48,10 +48,23 @@ def get_user_repositories(username):
     return repositories
 
 
+def search_repo(username, query):
+    search_url = 'https://api.github.com/search/repositories'
+    headers = {'Authorization': f'token {settings.GITHUB_TOKEN}'}
+    params = {'q': f'user:{username} {query}'}
 
-# def get_user_repositories(username):
-#     repositories_url = f'https://api.github.com/users/{username}/repos'
-#     repositories_response = requests.get(repositories_url)
-#     repositories_data = repositories_response.json()
-    
-#     return repositories_data
+    try:
+        search_response = requests.get(search_url, params=params, headers=headers, timeout=20)
+        search_response.raise_for_status()
+    except requests.exceptions.ConnectTimeout:
+        return JsonResponse({'error': 'Timeout error'})
+    except requests.exceptions.RequestException as e:
+        return JsonResponse({'error': str(e)})
+
+    if search_response.status_code == 200:
+        search_data = search_response.json().get('items', [])
+        return search_data
+    else:
+        print(f"Error searching repositories for {username}/{query}. Status code: {search_response.status_code}")
+
+    return []

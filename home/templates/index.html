@@ -10,6 +10,7 @@
     <style>
         body{
             display: flex;
+            justify-content: center;
         }
         .wrapper{
             display: grid;
@@ -85,31 +86,38 @@
     <div class="repo_container">
 
         <div class="form_section">
-            <form class="form-inline my-2 my-lg-0" style="display: flex; margin-top: 20px ; margin-bottom: 20px;">
+            <form class="form-inline my-2 my-lg-0" style="display: flex; margin-bottom:20px;" method="get" action="">
                 {% csrf_token %}
-                <input class="form-control mr-sm-2" type="search" placeholder="Search repository" aria-label="Search">
-                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+                <input type="hidden" name="username" value="{{ user_data.login }}">
+                <input class="form-control mr-sm-2" type="search" placeholder="Search repositories" name="repo_search" aria-label="Search">
+                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search Repositories</button>
             </form>
-            <form class="form-inline my-2 my-lg-0" style="margin-right: 50px;">
+            <div style="width: 100px;">
+
+            </div>
+
+            <form class="form-inline my-2 my-lg-0" style="margin-right: 50px;" method="get" action="{% url 'index' %}">
                 <div class="form-group">
                     <label for="exampleFormControlSelect1">Repositories per page : </label>
-                    <select class="form-control" id="exampleFormControlSelect1">
-                        <option>10</option>
-                        <option>20</option>
-                        <option>30</option>
-                        <option>40</option>
-                        <option>50</option>
-                        <option>60</option>
-                        <option>70</option>
-                        <option>80</option>
-                        <option>90</option>
-                        <option>100</option>
+                    <select class="form-control" id="exampleFormControlSelect1" name="repos_per_page" onchange="this.form.submit()">
+                        <option {% if request.GET.repos_per_page == '10' %}selected{% endif %}>10</option>
+                        <option {% if request.GET.repos_per_page == '20' %}selected{% endif %}>20</option>
+                        <option {% if request.GET.repos_per_page == '30' %}selected{% endif %}>30</option>
+                        <option {% if request.GET.repos_per_page == '40' %}selected{% endif %}>40</option>
+                        <option {% if request.GET.repos_per_page == '50' %}selected{% endif %}>50</option>
+                        <option {% if request.GET.repos_per_page == '60' %}selected{% endif %}>60</option>
+                        <option {% if request.GET.repos_per_page == '70' %}selected{% endif %}>70</option>
+                        <option {% if request.GET.repos_per_page == '80' %}selected{% endif %}>80</option>
+                        <option {% if request.GET.repos_per_page == '90' %}selected{% endif %}>90</option>
+                        <option {% if request.GET.repos_per_page == '100' %}selected{% endif %}>100</option>
                     </select>
                 </div>
             </form>
         </div>
 
         <div class="wrapper">
+            {% if objects %}
+            
             {% for repo in objects %}
         
             <div class="container">
@@ -128,32 +136,36 @@
             </div>
 
         {% endfor %}
+
+        {% else %}
+
+        <h1 class="container">
+            No repositories found.
+        </h1>
+            
+        {% endif %}
         </div>
 
         <nav aria-label="Page navigation example">
-          <ul class="pagination">
-      
-<!-- Update the pagination links -->
-{% if objects.has_previous %}
-    <li class="page-item"><a class="page-link" href="?username={{ user_data.login }}&page=1">&laquo; first</a></li>
-    <li class="page-item"><a class="page-link" href="?username={{ user_data.login }}&page={{ objects.previous_page_number }}">previous</a></li>
-{% endif %}
-
-{% for i in objects.paginator.page_range %}
-    <li class="page-item{% if i == objects.number %} active{% endif %}">
-        <a class="page-link" href="?username={{ user_data.login }}&page={{ i }}">{{ i }}</a>
-    </li>
-{% endfor %}
-
-{% if objects.has_next %}
-    <li class="page-item"><a class="page-link" href="?username={{ user_data.login }}&page={{ objects.next_page_number }}">next</a></li>
-    <li class="page-item"><a class="page-link" href="?username={{ user_data.login }}&page={{ objects.paginator.num_pages }}">last &raquo;</a></li>
-{% endif %}
-
-
-      
-          </ul>
-        </nav>
+            <ul class="pagination">
+                
+                {% if objects.has_previous %}
+                    <li class="page-item"><a class="page-link" href="?username={{ user_data.login }}&page=1&repos_per_page={{ repos_per_page }}">&laquo; first</a></li>
+                    <li class="page-item"><a class="page-link" href="?username={{ user_data.login }}&page={{ objects.previous_page_number }}&repos_per_page={{ repos_per_page }}">previous</a></li>
+                {% endif %}
+        
+                {% for i in objects.paginator.page_range %}
+                    <li class="page-item{% if i == objects.number %} active{% endif %}">
+                        <a class="page-link" href="?username={{ user_data.login }}&page={{ i }}&repos_per_page={{ repos_per_page }}">{{ i }}</a>
+                    </li>
+                {% endfor %}
+        
+                {% if objects.has_next %}
+                    <li class="page-item"><a class="page-link" href="?username={{ user_data.login }}&page={{ objects.next_page_number }}&repos_per_page={{ repos_per_page }}">next</a></li>
+                    <li class="page-item"><a class="page-link" href="?username={{ user_data.login }}&page={{ objects.paginator.num_pages }}&repos_per_page={{ repos_per_page }}">last &raquo;</a></li>
+                {% endif %}
+            </ul>
+        </nav>        
 
     </div>
 
