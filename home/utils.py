@@ -19,8 +19,7 @@ def get_user_repositories(username):
     base_url = f'https://api.github.com/users/{username}/repos'
     headers = {'Authorization': f'token {settings.GITHUB_TOKEN}'}
     repositories = []
-
-    # GitHub API returns paginated results
+    
     page = 1
     while True:
         params = {'page': page, 'per_page': 100}  # Adjust per_page based on your needs
